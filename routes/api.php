@@ -18,4 +18,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::resource('task', \App\Models\Task::class);
+Route::resource('task', \App\Http\Controllers\TaskController::class);
