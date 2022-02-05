@@ -1,0 +1,95 @@
+<template>
+    <div class="container-fluid mt-4">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th scope="col">Title</th>
+                <th scope="col">Description</th>
+                <th scope="col">Date Created</th>
+                <th scope="col">Date Last Update</th>
+                <th scope="col">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="task in tasks" :key="task.id">
+                <td>{{ task.title }}</td>
+                <td> {{ task.description }} </td>
+                <td> {{ task.created_at }} </td>
+                <td> {{ task.updated_at }} </td>
+                <td>
+                    <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                        <router-link
+                            :to='{name:"task-update", params:{id: task.id}}'
+                            class="btn btn-outline-success"
+                        >
+                            Edit
+                        </router-link>
+                        <button
+                            type="button"
+                            class="btn btn-outline-danger"
+                            @click="deleteTask(task.id)"
+                        >
+                            Delete
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</template>
+
+<script>
+    export default{
+        name: "task-list",
+        data(){
+            return {
+                tasks: []
+            }
+        },
+        mounted(){
+            this.showTasks()
+        },
+        methods:{
+            showTasks(){
+                this.axios.get('/api/task')
+                    .then(response =>{
+                        console.log("response", response.data)
+                        this.tasks = response.data
+                    })
+                    .catch(error =>{
+                        this.tasks = []
+                        console.error(error)
+                    })
+            },
+            deleteTask(id){
+                bootbox.confirm({
+                    message: "Are you sure to delete this task?",
+                    buttons: {
+                        confirm: {
+                            label: 'Yes',
+                            className: 'btn-success'
+                        },
+                        cancel: {
+                            label: 'No',
+                            className: 'btn-danger'
+                        }
+                    },
+                    callback: function (result) {
+                        console.log("result", result)
+                        if(result){
+                            axios.delete(`/api/task/${id}`)
+                                .then(response =>{
+                                    console.log(response.data)
+                                    window.location.reload()
+                                })
+                                .catch(error =>{
+                                    console.error(error)
+                                })
+                        }
+                    }
+                });
+            }
+        }
+    }
+</script>
