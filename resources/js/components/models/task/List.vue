@@ -11,6 +11,11 @@
             </tr>
             </thead>
             <tbody>
+            <tr v-if="tasks.length == 0">
+                <td colspan="5" class="text-center">
+                    The tasks list is empty
+                </td>
+            </tr>
             <tr v-for="task in tasks" :key="task.id">
                 <td>{{ task.title }}</td>
                 <td> {{ task.description }} </td>
@@ -40,55 +45,39 @@
 </template>
 
 <script>
-    export default{
+    export default {
         name: "task-list",
-        data(){
+        data() {
             return {
                 tasks: []
             }
         },
-        mounted(){
+        mounted() {
             this.showTasks()
         },
-        methods:{
-            showTasks(){
+        methods: {
+            showTasks() {
                 this.axios.get('/api/task')
-                    .then(response =>{
+                    .then(response => {
                         console.log("response", response.data)
                         this.tasks = response.data
                     })
-                    .catch(error =>{
+                    .catch(error => {
                         this.tasks = []
                         console.error(error)
                     })
             },
-            deleteTask(id){
-                bootbox.confirm({
-                    message: "Are you sure to delete this task?",
-                    buttons: {
-                        confirm: {
-                            label: 'Yes',
-                            className: 'btn-success'
-                        },
-                        cancel: {
-                            label: 'No',
-                            className: 'btn-danger'
-                        }
-                    },
-                    callback: function (result) {
-                        console.log("result", result)
-                        if(result){
-                            axios.delete(`/api/task/${id}`)
-                                .then(response =>{
-                                    console.log(response.data)
-                                    window.location.reload()
-                                })
-                                .catch(error =>{
-                                    console.error(error)
-                                })
-                        }
-                    }
-                });
+            deleteTask(id) {
+                if (confirm("Are you sure to delete this task?")) {
+                    this.axios.delete(`/api/task/${id}`)
+                        .then(response => {
+                            console.log(response.data)
+                            this.showTasks()
+                        })
+                        .catch(error => {
+                            console.error(error)
+                        })
+                }
             }
         }
     }

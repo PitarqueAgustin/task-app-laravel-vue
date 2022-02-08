@@ -16,7 +16,7 @@
                             v-model="task.title"
                         >
                     </div>
-                    <div class="form-group">
+                    <div class="form-group mt-2">
                         <label for="description" class="form-label">Description</label>
                         <textarea
                             name="description"
