@@ -1,5 +1,12 @@
 require('./bootstrap');
 
+import Alpine from 'alpinejs';
+
+window.Alpine = Alpine;
+
+Alpine.start();
+
+
 //import vue
 import vue from 'vue';
 window.Vue = vue;
@@ -19,7 +26,7 @@ const service = new Service(axios);
 service.register({
     onResponseError(error){
         if(error.response.status == 422
-        && error.response.statusText == "Unprocessable Content"){
+            && error.response.statusText == "Unprocessable Content"){
             let data = JSON.parse(error.response.data)
             data = Array.from(data.errors.title)
             data.forEach(err =>{
@@ -37,8 +44,8 @@ Vue.use(VueRouter);
 Vue.use(VueAxios,axios);
 
 const router = new VueRouter({
-   mode: 'history',
-   routes: routes
+    mode: 'history',
+    routes: routes
 });
 
 const app = new Vue({
@@ -53,11 +60,11 @@ const alert = (theme, message)=>{
 
     switch(theme){
         case "danger":
-           title = "Error"
-        break
+            title = "Error"
+            break
         default:
             title = "Warning"
-        break
+            break
     }
 
     document.querySelector('body').innerHTML +=
